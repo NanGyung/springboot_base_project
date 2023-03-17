@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -41,6 +42,8 @@ public class ProductDAOImpl implements ProductDAO{
     template.update(sb.toString(),param,keyHolder,new String[]{"product_id"});
 
     long productId = keyHolder.getKey().longValue();  //상품아이디
+
+    //String pname = (String)keyHolder.getKeys().get("pname");
 
     return productId;
   }
@@ -84,7 +87,7 @@ public class ProductDAOImpl implements ProductDAO{
 //      return Optional.empty();
 //    }
 //  }
-//
+//  // 이름 있는 구현 클래스
 //  private class ProductRowMapper implements RowMapper<Product> {
 //    @Override
 //    public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -96,6 +99,21 @@ public class ProductDAOImpl implements ProductDAO{
 //      return product;
 //    }
 //  }
+
+  //수동 매핑
+  private RowMapper<Product> productRowMapper() {
+    return (rs, rowNum) -> {
+      Product product = new Product();
+      product.setProductId(rs.getLong("product_id"));
+      product.setPname(rs.getString("pname"));
+      product.setQuantity(rs.getLong("quantity"));
+      product.setPrice(rs.getLong("price"));
+      return product;
+    };
+  }
+
+  // 자동 매핑  : 테이블의 컬럼명과 자바객체 타입의 멤버필드가 같아야한다.(Setter메소드에서 set을 뺀 이름)
+  // BeanPropertyRowMapper.newInstance(자바객체타입)
 
   /**
    * 수정
@@ -116,7 +134,7 @@ public class ProductDAOImpl implements ProductDAO{
         .addValue("pname",product.getPname())
         .addValue("quantity",product.getQuantity())
         .addValue("price",product.getPrice())
-        .addValue("productId",product.getProductId());
+        .addValue("id",productId);
 
     return template.update(sb.toString(),param);
   }
@@ -151,3 +169,4 @@ public class ProductDAOImpl implements ProductDAO{
     return list;
   }
 }
+
