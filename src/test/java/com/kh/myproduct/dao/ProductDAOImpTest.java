@@ -30,7 +30,8 @@ public class ProductDAOImpTest {
 
     Long productId = productDAO.save(product);
     log.info("productId={}",productId);
-//    Assertions.assertThat(productId).isLessThan(0L);
+    Assertions.assertThat(productId).isGreaterThan(0L);
+    //정확한 테스트를 위해 예상되는 값으로 결과 값과 비교 테스트
   }
 
   //조회
@@ -39,17 +40,17 @@ public class ProductDAOImpTest {
   void findById(){
     Long productId = 185L;
     Optional<Product> product = productDAO.findById(productId);
-    if(product.isPresent()){
-      log.info("product={}",product.get());
-    }else{
-      log.info("조회한 결과 없음");
-    }
-    Assertions.assertThat(product.stream().count())
-        .isEqualTo(1);
+//    if(product.isPresent()){
+//      log.info("product={}",product.get());
+//    }else{
+//      log.info("조회한 결과 없음");
+//    }
+//    Assertions.assertThat(product.stream().count())
+//        .isEqualTo(1);
     Product findedProduct = product.orElseThrow();// 없으면 java.util.NoSuchElementException
-//    Assertions.assertThat(findedProduct.getPname()).isEqualTo("복사기");
-//    Assertions.assertThat(findedProduct.getQuantity()).isEqualTo(100L);
-//    Assertions.assertThat(findedProduct.getPrice()).isEqualTo(1000000L);
+    Assertions.assertThat(findedProduct.getPname()).isEqualTo("복사기");
+    Assertions.assertThat(findedProduct.getQuantity()).isEqualTo(10L);
+    Assertions.assertThat(findedProduct.getPrice()).isEqualTo(1000000L);
   }
 
   //수정
@@ -59,8 +60,8 @@ public class ProductDAOImpTest {
     Long productId = 182L;
     Product product = new Product();
     product.setPname("복사기_수정");
-    product.setQuantity(10L);
-    product.setPrice(2000L);
+    product.setQuantity(20L);
+    product.setPrice(2000000L);
 
     int updatedRowCount = productDAO.update(productId, product);
     Optional<Product> findedProduct = productDAO.findById(productId);
@@ -75,16 +76,18 @@ public class ProductDAOImpTest {
   @Test
   @DisplayName("상품삭제")
   void delete(){
-    Long productId = 181L;
+    Long productId = 202L;
     int deleteRowCount = productDAO.delete(productId);
     Optional<Product> findedProduct = productDAO.findById(productId);
 //    Product product = findedProduct.orElseThrow();
     //case1)
 //    Assertions.assertThat(findedProduct.ofNullable("없음").orElseThrow())
 //              .isNotEqualTo("없음");
+
     //case2)
     Assertions.assertThatThrownBy(()->findedProduct.orElseThrow())
               .isNotInstanceOf(NoSuchElementException.class);
+    //예상한 exception이면 참
   }
 
   //목록
