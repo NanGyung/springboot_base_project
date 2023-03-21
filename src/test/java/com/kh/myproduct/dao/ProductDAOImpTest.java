@@ -104,4 +104,34 @@ public class ProductDAOImpTest {
 
     Assertions.assertThat(list.size()).isGreaterThan(0);
   }
+
+  @Test
+  @DisplayName("상품존재")
+  void isExist(){
+    Long productId = 304L;
+    boolean exist = productDAO.isExist(productId);
+    Assertions.assertThat(exist).isTrue();
+  }
+  @Test
+  @DisplayName("없는상품")
+  void isExist2(){
+    Long productId = 0L;
+    boolean exist = productDAO.isExist(productId);
+    Assertions.assertThat(exist).isFalse();
+  }
+
+  @Test
+  @DisplayName("전체 삭제")
+  void deleteAll(){
+    int deletedRows = productDAO.deleteAll();
+    int countOfRecord = productDAO.countOfRecord();
+    Assertions.assertThat(countOfRecord).isEqualTo(0);
+  }
+
+  @Test
+  @DisplayName("레코드 건수")
+  void countOfRecord(){
+    int countOfRecord = productDAO.countOfRecord();
+    log.info("countOfRecord={}",countOfRecord);
+  }
 }

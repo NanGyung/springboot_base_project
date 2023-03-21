@@ -20,4 +20,11 @@ public interface ProductSVC {
 
   //목록
   List<Product> findAll();
+
+  /**
+   * 상품존재유무
+   * @param productId 상품아이디
+   */
+  boolean isExist(Long productId);
 }
+

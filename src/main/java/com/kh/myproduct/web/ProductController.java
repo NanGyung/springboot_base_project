@@ -5,6 +5,7 @@ import com.kh.myproduct.svc.ProductSVC;
 import com.kh.myproduct.web.form.DetailForm;
 import com.kh.myproduct.web.form.SaveForm;
 import com.kh.myproduct.web.form.UpdateForm;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,23 +15,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Controller
 @RequestMapping("/products")
-@Slf4j
-//@RequiredArgsConstructor  //final 멤버 필드를 매개값으로 하는 생성자를 자동생성
+@RequiredArgsConstructor  // final멤버 필드를 매개값으로하는 생성자를 자동 생성
 public class ProductController {
 
   private final ProductSVC productSVC;
 
-  public ProductController(ProductSVC productSVC) {
-    this.productSVC = productSVC;
-  }
+//  public ProductController(ProductSVC productSVC) {
+//    this.productSVC = productSVC;
+//  }
 
   //등록양식
   @GetMapping("/add")
   public String saveForm(){
-    Product product = new Product();
-    Long save = productSVC.save(product);
 
     return "product/saveForm";
   }
@@ -43,9 +42,10 @@ public class ProductController {
 //      @Param("price") Long price
       @ModelAttribute SaveForm saveForm,
       RedirectAttributes redirectAttributes
-      ){
+  ){
 //    log.info("pname={}, quantity={}, price={}",pname,quantity,price);
-      log.info("saveForm={}",saveForm);
+    log.info("saveForm={}",saveForm);
+    //데이터 검증
     //등록
     Product product = new Product();
     product.setPname(saveForm.getPname());
@@ -95,13 +95,15 @@ public class ProductController {
     return "product/updateForm";
   }
 
-  //수정처리
+  //수정
   @PostMapping("/{id}/edit")
   public String update(
       @PathVariable("id") Long productId,
       @ModelAttribute("form") UpdateForm updateForm,
       RedirectAttributes redirectAttributes
   ){
+    //데이터 검증
+
     Product product = new Product();
     product.setProductId(productId);
     product.setPname(updateForm.getPname());
@@ -111,7 +113,7 @@ public class ProductController {
     productSVC.update(productId, product);
 
     redirectAttributes.addAttribute("id",productId);
-    return "redirect: /products/{id}/detail";
+    return "redirect:/products/{id}/detail";
   }
 
   //삭제
@@ -119,15 +121,18 @@ public class ProductController {
   public String deleteById(@PathVariable("id") Long productId){
 
     productSVC.delete(productId);
-    return "redirect: /products";
+
+    return "redirect:/products";
   }
 
   //목록
   @GetMapping
   public String findAll(Model model){
+
     List<Product> products = productSVC.findAll();
     model.addAttribute("products",products);
 
     return "product/all";
   }
+
 }
