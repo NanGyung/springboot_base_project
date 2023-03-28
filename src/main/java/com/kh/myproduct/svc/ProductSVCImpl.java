@@ -35,6 +35,11 @@ public class ProductSVCImpl implements ProductSVC{
   }
 
   @Override
+  public int deleteParts(List<Long> productIds) {
+    return productDAO.deleteParts(productIds);
+  }
+
+  @Override
   public List<Product> findAll() {
     return productDAO.findAll();
   }
@@ -43,4 +48,6 @@ public class ProductSVCImpl implements ProductSVC{
   public boolean isExist(Long productId) {
     return productDAO.isExist(productId);
   }
+
+
 }

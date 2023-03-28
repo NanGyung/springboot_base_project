@@ -5,10 +5,12 @@ import com.kh.myproduct.svc.ProductSVC;
 import com.kh.myproduct.web.form.DetailForm;
 import com.kh.myproduct.web.form.SaveForm;
 import com.kh.myproduct.web.form.UpdateForm;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -29,8 +31,9 @@ public class ProductController {
 
   //등록양식
   @GetMapping("/add")
-  public String saveForm(){
-
+  public String saveForm(Model model){
+    SaveForm saveForm = new SaveForm();
+    model.addAttribute("saveForm",saveForm);
     return "product/saveForm";
   }
 
@@ -40,12 +43,41 @@ public class ProductController {
 //      @Param("pname") String pname,
 //      @Param("quantity") Long quantity,
 //      @Param("price") Long price
-      @ModelAttribute SaveForm saveForm,
+//    @ModelAttribute : 1. 요청데이터를 자바객체로 바인딩, 2. Model객체에 추가
+      @Valid @ModelAttribute SaveForm saveForm,
+      BindingResult bindingResult,  //검증 결과를 담는 객체
       RedirectAttributes redirectAttributes
   ){
 //    log.info("pname={}, quantity={}, price={}",pname,quantity,price);
     log.info("saveForm={}",saveForm);
+
     //데이터 검증
+    //어노테이션 기반 검증
+    if(bindingResult.hasErrors()){
+      log.info("bindingResult={}", bindingResult);
+      return "product/saveForm";
+    }
+
+    // 필드오류
+    if(saveForm.getQuantity() == 100){
+      bindingResult.rejectValue("quantity","product");
+    }
+
+    // 글로벌오류
+    // 총액(상품수량*단가) 1000만원 초과금지
+    if(saveForm.getQuantity() * saveForm.getPrice() > 10_000_000L){
+      bindingResult.reject("totalprice",new String[]{"1000"},"");
+    }
+
+    if(saveForm.getQuantity() > 1 && saveForm.getQuantity() <10){
+      bindingResult.reject("quantity",new String[]{"1","2"},"");
+    }
+
+    if(bindingResult.hasErrors()){
+      log.info("bindingResult={}", bindingResult);
+      return "product/saveForm";
+    }
+
     //등록
     Product product = new Product();
     product.setPname(saveForm.getPname());
@@ -72,7 +104,7 @@ public class ProductController {
     detailForm.setQuantity(product.getQuantity());
     detailForm.setPrice(product.getPrice());
 
-    model.addAttribute("form",detailForm);
+    model.addAttribute("detailForm",detailForm);
     return "product/detailForm";
   }
 
@@ -91,7 +123,7 @@ public class ProductController {
     updateForm.setQuantity(product.getQuantity());
     updateForm.setPrice(product.getPrice());
 
-    model.addAttribute("form",updateForm);
+    model.addAttribute("updateForm",updateForm);
     return "product/updateForm";
   }
 
@@ -99,11 +131,17 @@ public class ProductController {
   @PostMapping("/{id}/edit")
   public String update(
       @PathVariable("id") Long productId,
-      @ModelAttribute("form") UpdateForm updateForm,
+      @Valid @ModelAttribute UpdateForm updateForm,
+      BindingResult bindingResult,
       RedirectAttributes redirectAttributes
   ){
     //데이터 검증
+    if(bindingResult.hasErrors()){
+      log.info("bindingResult={}",bindingResult);
+      return "product/updateForm";
+    }
 
+    //정상 처리
     Product product = new Product();
     product.setProductId(productId);
     product.setPname(updateForm.getPname());
@@ -131,8 +169,21 @@ public class ProductController {
 
     List<Product> products = productSVC.findAll();
     model.addAttribute("products",products);
-
+    if (products.size() == 0) {
+//      throw new BizException("등록된 상품정보가 없습니다");
+    }
     return "product/all";
   }
 
+  //선택삭제
+  @PostMapping("/items/del")
+  public String deleteParts(@RequestParam("chk") List<Long> productIds){
+    log.info("productIds={}", productIds);
+    if(productIds.size() > 0) {
+      productSVC.deleteParts(productIds);
+    }else {
+      return "product/all";
+    }
+    return "redirect:/products";
+  }
 }

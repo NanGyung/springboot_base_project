@@ -26,5 +26,12 @@ public interface ProductSVC {
    * @param productId 상품아이디
    */
   boolean isExist(Long productId);
+
+  /**
+   * 부분삭제
+   * @param productIds
+   * @return
+   */
+  int deleteParts(List<Long> productIds);
 }
 

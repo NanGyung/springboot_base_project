@@ -2,6 +2,7 @@ package com.kh.myproduct.web;
 
 import com.kh.myproduct.dao.Product;
 import com.kh.myproduct.svc.ProductSVC;
+import com.kh.myproduct.web.exception.RestBizException;
 import com.kh.myproduct.web.rest.SaveRest;
 import com.kh.myproduct.web.rest.UpdateRest;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +52,9 @@ public class RestProductController {
 
     //1)상품존재유뮤판단
     if(!productSVC.isExist(productId)){
-      res = RestResponse.createRestResponse("01", "해당 상품이 없습니다.", null);
-      return res;
+//      res = RestResponse.createRestResponse("01", "해당 상품이 없습니다.", null);
+//      return res;
+      throw new RestBizException("99","해당 상품이 없습니다.");
     }
 
     Optional<Product> findedProduct = productSVC.findById(productId);
@@ -71,10 +73,11 @@ public class RestProductController {
     //검증
 
 
-    //1)상품존재유뮤판단
+    //1)상품존재유무판단
     if(!productSVC.isExist(productId)){
-      res = RestResponse.createRestResponse("01", "해당 상품이 없습니다.", null);
-      return res;
+//      res = RestResponse.createRestResponse("01", "해당 상품이 없습니다.", null);
+//      return res;
+      throw new RestBizException("99","해당 상품이 없습니다.");
     }
 
     //2)수정
@@ -100,10 +103,11 @@ public class RestProductController {
   public RestResponse<Object> delete(@PathVariable("id") Long productId){
     RestResponse<Object> res = null;
 
-    //1)상품존재유뮤판단
+    //1)상품존재유무판단
     if(!productSVC.isExist(productId)){
-      res = RestResponse.createRestResponse("01", "해당 상품이 없습니다.", null);
-      return res;
+//      res = RestResponse.createRestResponse("01", "해당 상품이 없습니다.", null);
+//      return res;
+      throw new RestBizException("99","해당 상품이 없습니다.");
     }
 
     //2)상품삭제
@@ -116,7 +120,7 @@ public class RestProductController {
     return res;
   }
 
-  //상품목록록
+  //상품목록
   @GetMapping
   public RestResponse<Object> findAll(){
     RestResponse<Object> res = null;
@@ -125,6 +129,23 @@ public class RestProductController {
       res = RestResponse.createRestResponse("00", "성공", list);
     }else{
       res = RestResponse.createRestResponse("01", "상품이 1건도 존재하지 않습니다.", null);
+    }
+    return res;
+  }
+
+  //선택항목삭제
+  @PostMapping(value="/items/del")
+  public  RestResponse<Object> deleteItems(@RequestBody List<Long> ids){
+    RestResponse<Object> res = null;
+    log.info("ids={}",ids);
+    if(ids.size() < 1) {
+      res = RestResponse.createRestResponse("01", "삭제항목 미선택", null);
+      return res;
+    }
+
+    int deletedRows = productSVC.deleteParts(ids);
+    if(deletedRows > 0) {
+      res = RestResponse.createRestResponse("00", "성공", deletedRows);
     }
     return res;
   }

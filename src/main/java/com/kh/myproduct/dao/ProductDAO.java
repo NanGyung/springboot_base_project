@@ -34,7 +34,14 @@ public interface ProductDAO {
   int delete(Long productId);
 
   /**
-   * 삭제
+   * 부분삭제
+   * @param productIds
+   * @return
+   */
+  int deleteParts(List<Long> productIds);
+
+  /**
+   * 전체삭제
    * @return 삭제된 레코드 수
    */
   int deleteAll();
@@ -56,4 +63,6 @@ public interface ProductDAO {
    * * @return 레코드 수
    */
   int countOfRecord();
+
+
 }

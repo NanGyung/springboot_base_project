@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -133,5 +134,13 @@ public class ProductDAOImpTest {
   void countOfRecord(){
     int countOfRecord = productDAO.countOfRecord();
     log.info("countOfRecord={}",countOfRecord);
+  }
+
+  @Test
+  @DisplayName("부분삭제")
+  void deleteParts(){
+    List<Long> productIds = Arrays.asList(41L,22L);
+    int rows = productDAO.deleteParts(productIds);
+    Assertions.assertThat(rows).isEqualTo(productIds.size());
   }
 }
