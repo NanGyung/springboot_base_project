@@ -17,9 +17,9 @@ class MemberDAOImplTest {
   @DisplayName("가입")
   void save() {
     Member member = new Member();
-    member.setEmail("test4@kh.com");
-    member.setPasswd("1128");
-    member.setNickname("별칭4");
+    member.setEmail("test5@kh.com");
+    member.setPasswd("1129");
+    member.setNickname("별칭5");
     member.setGender("남자");
     member.setHobby("축구");
     member.setRegion("울산");
@@ -27,9 +27,9 @@ class MemberDAOImplTest {
     Member saveMember = memberDAO.save(member);
 
     Assertions.assertThat(saveMember.getMemberId()).isGreaterThan(0);
-    Assertions.assertThat(saveMember.getEmail()).isEqualTo("test4@kh.com");
-    Assertions.assertThat(saveMember.getPasswd()).isEqualTo("1128");
-    Assertions.assertThat(saveMember.getNickname()).isEqualTo("별칭4");
+    Assertions.assertThat(saveMember.getEmail()).isEqualTo("test5@kh.com");
+    Assertions.assertThat(saveMember.getPasswd()).isEqualTo("1129");
+    Assertions.assertThat(saveMember.getNickname()).isEqualTo("별칭5");
     Assertions.assertThat(saveMember.getGender()).isEqualTo("남자");
     Assertions.assertThat(saveMember.getHobby()).isEqualTo("축구");
     Assertions.assertThat(saveMember.getRegion()).isEqualTo("울산");

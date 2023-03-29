@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -33,23 +34,6 @@ public class MemberDAOImpl implements MemberDAO{
     StringBuffer sql = new StringBuffer();
     sql.append("insert into member(member_id, email, passwd, nickname, gender, hobby, region) ");
     sql.append("values(member_member_id_seq.nextval, :email, :passwd, :nickname, :gender, :hobby, :region ) ");
-//    sql.append( "INSERT INTO member ( ");
-//    sql.append( " member_id, ");
-//    sql.append( " email, ");
-//    sql.append( " passwd,  ");
-//    sql.append( " nickname,  ");
-//    sql.append( " gender,  ");
-//    sql.append( " hobby, ");
-//    sql.append( " region ) ");
-//    sql.append( " VALUES ( ");
-//    sql.append( " member_member_id_seq.nextval,  ");
-//    sql.append( " :email, ");
-//    sql.append( " :passwd,  ");
-//    sql.append( " :nickname,  ");
-//    sql.append( " :gender,  ");
-//    sql.append( " :hobby, ");
-//    sql.append( " :region ");
-//    sql.append( ") ");
 
     SqlParameterSource param = new BeanPropertySqlParameterSource(member);
     KeyHolder keyHolder = new GeneratedKeyHolder(); //insert 된 레코드에서 컬럼값 추출
@@ -76,7 +60,7 @@ public class MemberDAOImpl implements MemberDAO{
    * @return
    */
   @Override
-  public Member findByEmail(String email) {
+  public Optional<Member> findByEmail(String email) {
     return null;
   }
 
@@ -85,7 +69,7 @@ public class MemberDAOImpl implements MemberDAO{
    * @return
    */
   @Override
-  public Member findById(String memberId) {
+  public Optional<Member> findById(String memberId) {
     return null;
   }
 
@@ -120,7 +104,7 @@ public class MemberDAOImpl implements MemberDAO{
    * @return
    */
   @Override
-  public Member login(String email, String passwd) {
+  public Optional<Member> login(String email, String passwd) {
     return null;
   }
 
@@ -129,17 +113,9 @@ public class MemberDAOImpl implements MemberDAO{
    * @return
    */
   @Override
-  public String findEmailByNickname(String nickname) {
+  public Optional<String> findEmailByNickname(String nickname) {
     return null;
   }
 
-  /**
-   * @param memberId
-   * @param passwd
-   * @return
-   */
-  @Override
-  public String findPasswdByAndNickname(String memberId, String passwd) {
-    return null;
-  }
+
 }
