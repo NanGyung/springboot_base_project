@@ -2,6 +2,7 @@ package com.kh.app.web;
 
 import com.kh.app.domain.entity.Member;
 import com.kh.app.domain.member.svc.MemberSVC;
+import com.kh.app.web.common.CodeDecode;
 import com.kh.app.web.form.member.JoinForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +26,18 @@ import java.util.List;
 public class MemberController {
 
   private final MemberSVC memberSVC;
+
+
+  @ModelAttribute("codes")
+  public List<CodeDecode> code() {
+    List<CodeDecode> codes = new ArrayList<>();
+    codes.add(new CodeDecode("서울","서울"));
+    codes.add(new CodeDecode("부산","부산"));
+    codes.add(new CodeDecode("대구","대구"));
+    codes.add(new CodeDecode("울산","울산"));
+    return codes;
+  }
+
 
   // 회원가입 양식
   @GetMapping("/add")
@@ -44,7 +58,7 @@ public class MemberController {
 
     //비밀번호 체크
     if(!joinForm.getPasswd().equals(joinForm.getPasswdchk())){
-      bindingResult.reject("","비밀번호가 동일하지 않습니다.");
+      bindingResult.reject("passwd","비밀번호가 동일하지 않습니다.");
       return "member/joinForm";
     }
 
