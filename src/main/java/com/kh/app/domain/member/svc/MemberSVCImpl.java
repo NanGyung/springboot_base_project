@@ -13,14 +13,15 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 //@Transactional
-public class MemberSVCImpl implements MemberSVC {
+public class MemberSVCImpl implements MemberSVC{
 
   private final MemberDAO memberDAO;
 
   /**
    * 가입
-   * @param member 회원정보
-   * @return 회원 아이디
+   *
+   * @param member
+   * @return
    */
   @Override
   public Member save(Member member) {
@@ -28,7 +29,6 @@ public class MemberSVCImpl implements MemberSVC {
   }
 
   /**
-   * 수정
    * @param memberId
    * @param member
    */
@@ -51,7 +51,7 @@ public class MemberSVCImpl implements MemberSVC {
    * @return
    */
   @Override
-  public Optional<Member> findById(String memberId) {
+  public Optional<Member> findById(Long memberId) {
     return Optional.empty();
   }
 
@@ -72,22 +72,25 @@ public class MemberSVCImpl implements MemberSVC {
   }
 
   /**
+   * 회원아이디(email) 존재유무확인
    * @param email
    * @return
    */
   @Override
   public boolean isExist(String email) {
-    return false;
+    return memberDAO.isExist(email);
   }
 
   /**
+   * 로그인
    * @param email
    * @param passwd
    * @return
    */
   @Override
   public Optional<Member> login(String email, String passwd) {
-    return Optional.empty();
+
+    return memberDAO.login(email,passwd);
   }
 
   /**
