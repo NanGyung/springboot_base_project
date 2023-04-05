@@ -17,7 +17,7 @@ import java.util.UUID;
 @Component
 public class MultipartFileToUploadFile {
 
-  @Value("${attach.root_dir}")
+  @Value("${attach.root_dir}")  // d:/attach/
   private String ROOT_DIR;
 
   // 파일 저장경로

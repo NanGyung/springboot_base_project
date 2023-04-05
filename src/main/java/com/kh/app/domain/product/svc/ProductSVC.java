@@ -17,6 +17,8 @@ public interface ProductSVC {
   //수정
   int update(Long productId, Product product);
 
+  int update(Long productId, Product product, List<UploadFile> uploadFiles);
+
   //삭제
   int delete(Long productId);
 

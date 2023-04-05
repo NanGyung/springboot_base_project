@@ -27,8 +27,12 @@ public class ProductSVCImpl implements ProductSVC{
   @Override
   public Long save(Product product, List<UploadFile> uploadFiles) {
     Long productId = save(product);
-    uploadFiles.stream().forEach(file->file.setRid(productId));
-    uploadFileDAO.addFiles(uploadFiles);
+
+    if (uploadFiles.size() > 0) {
+      uploadFiles.stream().forEach(file->file.setRid(productId));
+      uploadFileDAO.addFiles(uploadFiles);
+    }
+
     return productId;
   }
 
@@ -40,6 +44,16 @@ public class ProductSVCImpl implements ProductSVC{
   @Override
   public int update(Long productId, Product product) {
     return productDAO.update(productId, product);
+  }
+
+  @Override
+  public int update(Long productId, Product product, List<UploadFile> uploadFiles) {
+    productDAO.update(productId, product);
+    if (uploadFiles.size() > 0) {
+      uploadFiles.stream().forEach(file->file.setRid(productId));
+      uploadFileDAO.addFiles(uploadFiles);
+    }
+    return 0;
   }
 
   @Override
